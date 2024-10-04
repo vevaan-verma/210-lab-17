@@ -29,121 +29,41 @@ struct Node {
 int main() {
 
 	Node* head = nullptr;
-	int count = 0;
 
-	// create a linked list of size SIZE with random numbers 0-99
-	for (int i = 0; i < SIZE; i++) {
+	createList(head); // create a linked list of size SIZE with random numbers 0-99
+	output(head); // output the linked list
+	cout << "----------------------------------" << endl; // output a line for formatting purposes
 
-		int tmp_val = rand() % 100;
-		Node* newVal = new Node;
-
-		// adds node at head
-		if (!head) { // if this is the first node, it's the new head
-
-			head = newVal;
-			newVal->next = nullptr;
-			newVal->value = tmp_val;
-
-		} else { // its a second or subsequent node; place at the head
-
-			newVal->next = head;
-			newVal->value = tmp_val;
-			head = newVal;
-
-		}
-	}
-
-	output(head);
-
-	// deleting a node
-	Node* current = head;
+	// NODE DELETION
+	// prompt the user for the index of the node to delete
 	cout << "Which node to delete? " << endl;
 	output(head);
 	int entry;
 	cout << "Choice --> ";
 	cin >> entry;
 
-	// traverse that many times and delete that node
-	current = head;
-	Node* prev = head;
+	cout << endl; // output blank line for formatting purposes
+	deleteNode(head, entry); // delete the node at the specified index
+	output(head); // output the linked list
+	cout << "----------------------------------" << endl; // output a line for formatting purposes
 
-	for (int i = 0; i < (entry - 1); i++) {
-
-		if (i == 0) {
-
-			current = current->next;
-
-		} else {
-
-			current = current->next;
-			prev = prev->next;
-
-		}
-	}
-
-	// at this point, delete current and reroute pointers
-	if (current) {  // checks for current to be valid before deleting the node
-
-		prev->next = current->next;
-		delete current;
-		current = nullptr;
-
-	}
-
-	output(head);
-
-	// insert a node
-	current = head;
+	// NODE INSERTION
+	// prompt the user for the index of the node to insert after
 	cout << "After which node to insert 10000? " << endl;
-	count = 1;
-
-	while (current) {
-
-		cout << "[" << count++ << "] " << current->value << endl;
-		current = current->next;
-
-	}
-
+	output(head);
 	cout << "Choice --> ";
 	cin >> entry;
 
-	current = head;
-	prev = head;
+	cout << endl; // output blank line for formatting purposes
+	insertNode(head, 10000, entry); // insert the node with value 10000 after the specified index
+	output(head); // output the linked list
+	cout << "----------------------------------" << endl; // output a line for formatting purposes
 
-	for (int i = 0; i < (entry); i++) {
-
-		if (i == 0) {
-
-			current = current->next;
-
-		} else {
-
-			current = current->next;
-			prev = prev->next;
-
-		}
-	}
-
-	//at this point, insert a node between prev and current
-	Node* newnode = new Node;
-	newnode->value = 10000;
-	newnode->next = current;
-	prev->next = newnode;
+	// LIST DELETION
+	cout << "Deleting the linked list..." << endl;
+	deleteList(head); // delete the linked list
 	output(head);
-
-	// deleting the linked list
-	current = head;
-
-	while (current) {
-
-		head = current->next;
-		delete current;
-		current = head;
-
-	}
-
-	head = nullptr;
-	output(head);
+	cout << "----------------------------------" << endl;
 
 	return 0;
 
@@ -240,8 +160,84 @@ void insertNode(Node*& head, float nodeVal, int index) {
 
 }
 
+// deleteNode() deletes a node from the linked list
+// arguments: Node*& - the head of the linked list, int - the index of the node to delete
+// returns: none
+void deleteNode(Node*& head, int index) {
+
+	// make sure the list isn't empty
+	if (!head) {
+
+		cout << "Empty list.\n";
+		return;
+
+	}
+
+	Node* current = head; // start at the head of the list
+	Node* prev = nullptr;
+	int count = 0;
+
+	// traverse the list to the node before the one to delete
+	while (current && count < index - 1) {
+
+		prev = current;
+		current = current->next;
+		count++;
+
+	}
+
+	// if the index is out of bounds, output an error message
+	if (!current) {
+
+		cout << "Index out of bounds.\n";
+		return;
+
+	}
+
+	// if the node to delete is the head, update the head
+	if (!prev)
+		head = current->next;
+	else
+		prev->next = current->next; // reroute the pointers to skip the node to delete (by pointing the previous node to the node after the current node)
+
+	// delete the current node
+	delete current;
+
+}
+
+// deleteList() deletes the linked list
+// arguments: Node*& - the head of the linked list
+// returns: none
+void deleteList(Node*& head) {
+
+	// make sure the list isn't empty
+	if (!head) {
+
+		cout << "Empty list.\n";
+		return;
+
+	}
+
+	Node* current = head; // start at the head of the list
+
+	while (current) {
+
+		head = current->next; // move the head to the next node
+		delete current; // delete the current node
+		current = head; // move to the next node
+
+	}
+
+	head = nullptr; // set the head to null
+
+}
+
+// output() outputs the linked list to the console
+// arguments: Node* - the head of the linked list
+// returns: none
 void output(Node* hd) {
 
+	// make sure the list isn't empty
 	if (!hd) {
 
 		cout << "Empty list.\n";
@@ -250,15 +246,13 @@ void output(Node* hd) {
 	}
 
 	int count = 1;
-	Node* current = hd;
+	Node* current = hd; // start at the head of the list
 
-	while (current) {
+	// traverse the list and print each node
+	while (current) { // make sure the current node exists
 
-		cout << "[" << count++ << "] " << current->value << endl;
-		current = current->next;
+		cout << "[" << count++ << "] " << current->value << endl; // output the value of the current node
+		current = current->next; // move to the next node
 
 	}
-
-	cout << endl;
-
 }
