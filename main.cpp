@@ -1,6 +1,6 @@
 // COMSC-210 | Lab 17 | Vevaan Verma
-#include <iostream>
 using namespace std;
+#include <iostream>
 
 struct Node;
 
